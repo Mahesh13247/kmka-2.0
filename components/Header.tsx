@@ -63,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                 {/* Default View */}
                 <h1 className="text-xl md:text-2xl font-bold text-white whitespace-nowrap">
                     <span className="bg-gradient-to-r from-white to-gray-400 text-transparent bg-clip-text">
-                        🥵
+                        Study Matrial
                     </span>
                 </h1>
                 
