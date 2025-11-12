@@ -7,15 +7,11 @@ import type { Video, EpornerApiParams } from "./types";
 import { useFavorites } from "./hooks/useFavorites";
 import { FloatingActionButton } from "./components/FloatingActionButton";
 import { Chatbot } from "./components/Chatbot";
-import { FilterProvider, useFilters } from "./contexts/FilterContext";
-import { FilterPanel } from "./components/FilterPanel";
 import { Toast } from "./components/Toast";
 
-interface CurrentFilterParams {
-  order: string;
-  category: string;
-  duration: [number, number];
-}
+const DEFAULT_ORDER = "latest";
+const DEFAULT_CATEGORY = "";
+const RESULTS_PER_PAGE = 30;
 
 const VideoContent: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -33,7 +29,6 @@ const VideoContent: React.FC = () => {
     type: "success";
   } | null>(null);
 
-  const { order, category, duration } = useFilters();
   const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -52,23 +47,16 @@ const VideoContent: React.FC = () => {
   );
 
   const fetchVideos = useCallback(
-    async (
-      currentParams: CurrentFilterParams,
-      query: string,
-      currentPage: number
-    ) => {
+    async (query: string, currentPage: number) => {
       setIsLoading(true);
       setError(null);
       try {
-        const [duration_min, duration_max] = currentParams.duration;
         const params: EpornerApiParams = {
-          order: currentParams.order,
-          category: currentParams.category,
+          order: DEFAULT_ORDER,
+          category: DEFAULT_CATEGORY,
           query,
           page: currentPage,
-          per_page: 30,
-          duration_min: duration_min > 0 ? duration_min : undefined,
-          duration_max: duration_max > 0 ? duration_max : undefined,
+          per_page: RESULTS_PER_PAGE,
         };
         const newVideos = await getVideos(params);
         if (newVideos.length === 0) {
@@ -79,7 +67,7 @@ const VideoContent: React.FC = () => {
               currentPage === 1 ? newVideos : [...prev, ...newVideos];
             return result;
           });
-          setHasMore(newVideos.length >= 30);
+          setHasMore(newVideos.length >= RESULTS_PER_PAGE);
         }
       } catch (err) {
         setError(
@@ -102,9 +90,9 @@ const VideoContent: React.FC = () => {
       setPage(1);
       setVideos([]);
       setHasMore(true);
-      fetchVideos({ order, category, duration }, "", 1);
+      fetchVideos("", 1);
     }
-  }, [isInitialLoad, viewMode]);
+  }, [fetchVideos, isInitialLoad, viewMode]);
 
   useEffect(() => {
     if (!isInitialLoad && viewMode === "search") {
@@ -112,18 +100,18 @@ const VideoContent: React.FC = () => {
         setPage(1);
         setVideos([]);
         setHasMore(true);
-        // Always fetch videos when filters change, even without a search query
-        fetchVideos({ order, category, duration }, searchQuery || "", 1);
+        // Always fetch videos when search query changes
+        fetchVideos(searchQuery || "", 1);
       }, 300); // Debounce search/filter changes
       return () => clearTimeout(handler);
     }
-  }, [searchQuery, order, category, duration, viewMode, isInitialLoad]);
+  }, [fetchVideos, searchQuery, viewMode, isInitialLoad]);
 
   useEffect(() => {
     if (viewMode === "search" && page > 1) {
-      fetchVideos({ order, category, duration }, searchQuery || "", page);
+      fetchVideos(searchQuery || "", page);
     }
-  }, [page, viewMode, order, category, duration, searchQuery, fetchVideos]);
+  }, [page, viewMode, searchQuery, fetchVideos]);
 
   const handleSearch = useCallback((query: string) => {
     setViewMode("search");
@@ -182,10 +170,9 @@ const VideoContent: React.FC = () => {
         onToggleFavoritesView={handleToggleFavoritesView}
         isFavoritesView={isFavoritesView}
       />
-      <FilterPanel />
       <main className="container mx-auto px-4 py-8 pt-20 md:pt-24">
         <div
-          key={`${viewMode}-${videos.length}-${category}`}
+          key={`${viewMode}-${videos.length}-${searchQuery}`}
           className="animate-fade-in"
         >
           <VideoGrid
@@ -227,10 +214,6 @@ const VideoContent: React.FC = () => {
   );
 };
 
-const App: React.FC = () => (
-  <FilterProvider>
-    <VideoContent />
-  </FilterProvider>
-);
+const App: React.FC = () => <VideoContent />;
 
 export default App;

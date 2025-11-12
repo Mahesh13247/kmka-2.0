@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { SearchIcon, FilterIcon, StarIcon, ArrowLeftIcon, CloseIcon } from './IconComponents';
-import { useFilters } from '../contexts/FilterContext';
+import { SearchIcon, StarIcon, ArrowLeftIcon, CloseIcon } from './IconComponents';
 
 interface HeaderProps {
     onSearch: (query: string) => void;
@@ -11,7 +10,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView, isFavoritesView }) => {
     const [query, setQuery] = useState('');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const { togglePanel } = useFilters();
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -94,13 +92,6 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                         aria-label="Open search"
                     >
                         <SearchIcon />
-                    </button>
-                    <button 
-                        onClick={togglePanel} 
-                        className="p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white"
-                        aria-label="Toggle filters"
-                    >
-                        <FilterIcon />
                     </button>
                     <button 
                         onClick={onToggleFavoritesView}

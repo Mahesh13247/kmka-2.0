@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -5,22 +9,22 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  width: 8px;
+  height: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #4a5568; /* gray-700 */
-    border-radius: 10px;
-    border: 2px solid #1a202c; /* gray-900 */
+  background-color: #4a5568; /* gray-700 */
+  border-radius: 10px;
+  border: 2px solid #1a202c; /* gray-900 */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #718096; /* gray-600 */
+  background-color: #718096; /* gray-600 */
 }
 
 /* Custom Scrollbar for Firefox */
@@ -30,12 +34,12 @@ body {
 }
 
 .line-clamp-2 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
+
 /* This file can be used for any custom CSS that is difficult to achieve with Tailwind alone */
 /* Or for defining custom animations and utilities */
-
 /* Custom Scrollbar for Webkit browsers (Chrome, Safari) */

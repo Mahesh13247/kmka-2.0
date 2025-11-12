@@ -23,12 +23,6 @@ export interface Video {
     }[];
 }
 
-export interface Category {
-    id: string;
-    name: string;
-    count: number;
-}
-
 export interface EpornerApiParams {
     query: string;
     page: number;
