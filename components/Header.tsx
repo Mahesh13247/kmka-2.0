@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                 <h1 className="text-xl md:text-2xl font-bold text-white whitespace-nowrap ">
                     <a href="https://mahesh13247.github.io/kmka-2.0/">
                     <span className="text-white flex ">
-                        Study Matrial <p className="text-[10px] text-[#FFFF00] pl-1">(Made By Mahesh ⭐)</p>
+                        Study Matrial <p className="text-[10px] text-[#FFFF00] pl-1">(Made By <span className="text-[#ADFF2F]">Mahesh</span> ⭐)</p>
                     </span></a>
                 </h1>
                 
