@@ -62,9 +62,10 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                 
                 {/* Default View */}
                 <h1 className="text-xl md:text-2xl font-bold text-white whitespace-nowrap">
+                    <a href="/">
                     <span className="bg-gradient-to-r from-white to-gray-400 text-transparent bg-clip-text">
                         Study Matrial
-                    </span>
+                    </span></a>
                 </h1>
                 
                 <form onSubmit={handleSearchSubmit} className="relative hidden md:block md:flex-grow max-w-lg">
