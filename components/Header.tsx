@@ -61,10 +61,10 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                 </div>
                 
                 {/* Default View */}
-                <h1 className="text-xl md:text-2xl font-bold text-white whitespace-nowrap">
+                <h1 className="text-xl md:text-2xl font-bold text-white whitespace-nowrap ">
                     <a href="/">
-                    <span className="bg-gradient-to-r from-white to-gray-400 text-transparent bg-clip-text">
-                        Study Matrial
+                    <span className="text-white flex ">
+                        Study Matrial <p className="text-[10px] text-[#FFFF00] pl-1">(Made By Mahesh ⭐)</p>
                     </span></a>
                 </h1>
                 
