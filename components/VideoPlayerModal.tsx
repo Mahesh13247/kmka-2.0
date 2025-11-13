@@ -12,7 +12,7 @@ interface VideoPlayerModalProps {
 }
 
 const RelatedVideoCard: React.FC<{ video: Video; onClick: () => void }> = ({ video, onClick }) => (
-    <div onClick={onClick} className="flex gap-3 cursor-pointer p-2 rounded-md hover:bg-gray-800 transition-colors">
+    <div onClick={onClick} className="flex gap-3 cursor-pointer p-3 rounded-[20px] hover:bg-gray-800 transition-colors">
         <div className="relative flex-shrink-0">
             <img src={video.default_thumb.src} alt={video.title} className="w-28 h-16 object-cover rounded-md" loading="lazy" />
             <span className="absolute bottom-1 right-1 bg-black bg-opacity-70 text-white text-xs px-1.5 py-0.5 rounded">
