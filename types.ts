@@ -37,8 +37,3 @@ export interface FavoriteVideo extends Video {
     favoritedAt: number;
 }
 
-export interface ChatMessage {
-  role: 'user' | 'model';
-  parts: { text: string }[];
-  id: string;
-}

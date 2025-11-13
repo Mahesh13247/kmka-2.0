@@ -5,8 +5,6 @@ import { VideoPlayerModal } from "./components/VideoPlayerModal";
 import { getVideos } from "./services/epornerService";
 import type { Video, EpornerApiParams } from "./types";
 import { useFavorites } from "./hooks/useFavorites";
-import { FloatingActionButton } from "./components/FloatingActionButton";
-import { Chatbot } from "./components/Chatbot";
 import { Toast } from "./components/Toast";
 
 const DEFAULT_ORDER = "latest";
@@ -22,7 +20,6 @@ const VideoContent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const [isChatbotOpen, setIsChatbotOpen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"search" | "favorites">("search");
   const [toast, setToast] = useState<{
     message: string;
@@ -198,11 +195,6 @@ const VideoContent: React.FC = () => {
           isLoadingRelated={isLoadingRelated}
         />
       )}
-      <FloatingActionButton
-        onClick={() => setIsChatbotOpen(!isChatbotOpen)}
-        isOpen={isChatbotOpen}
-      />
-      <Chatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
       {toast && (
         <Toast
           message={toast.message}

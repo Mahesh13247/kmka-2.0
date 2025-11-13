@@ -7,23 +7,24 @@ const rootElement = document.getElementById("root");
 if (!rootElement) {
   throw new Error("Could not find root element to mount to");
 }
-document.addEventListener("contextmenu", (e) => e.preventDefault());
+document.addEventListener("contextmenu", (event) => event.preventDefault());
 
-function ctrlShiftKey(e, keyCode) {
-  return e.ctrlKey && e.shiftKey && e.keyCode === keyCode.charCodeAt(0);
-}
+const isCtrlShiftKey = (event: KeyboardEvent, key: string) =>
+  event.ctrlKey && event.shiftKey && event.key.toUpperCase() === key.toUpperCase();
 
-document.onkeydown = (e) => {
-  // Disable F12, Ctrl + Shift + I, Ctrl + Shift + J, Ctrl + U
-  if (
-    event.keyCode === 123 ||
-    ctrlShiftKey(e, "I") ||
-    ctrlShiftKey(e, "J") ||
-    ctrlShiftKey(e, "C") ||
-    (e.ctrlKey && e.keyCode === "U".charCodeAt(0))
-  )
-    return false;
-};
+document.addEventListener("keydown", (event) => {
+  // Disable F12, Ctrl + Shift + I/J/C, Ctrl + U
+  const isDisallowed =
+    event.key === "F12" ||
+    isCtrlShiftKey(event, "I") ||
+    isCtrlShiftKey(event, "J") ||
+    isCtrlShiftKey(event, "C") ||
+    (event.ctrlKey && event.key.toUpperCase() === "U");
+
+  if (isDisallowed) {
+    event.preventDefault();
+  }
+});
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
