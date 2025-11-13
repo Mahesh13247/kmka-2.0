@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { Video } from '../types';
 import { CloseIcon, ClockIcon, StarIcon, LinkIcon, CopyIcon } from './IconComponents';
 
@@ -45,6 +45,7 @@ const RelatedVideoSkeleton: React.FC = () => (
 
 export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ video, onClose, relatedVideos, onSelectRelated, isLoadingRelated }) => {
     const [isLinkCopied, setIsLinkCopied] = useState(false);
+    const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
@@ -55,15 +56,46 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ video, onClo
         window.addEventListener('keydown', handleEsc);
 
         return () => {
+            if (copyTimeoutRef.current) {
+                clearTimeout(copyTimeoutRef.current);
+            }
             window.removeEventListener('keydown', handleEsc);
         };
     }, [onClose]);
 
-    const handleCopyLink = () => {
-        navigator.clipboard.writeText(`https://www.eporner.com/video-${video.id}/`).then(() => {
+    const handleCopyLink = async () => {
+        const videoUrl = `https://www.eporner.com/video-${video.id}/`;
+
+        const fallbackCopy = () => {
+            const textarea = document.createElement('textarea');
+            textarea.value = videoUrl;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            const result = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            if (!result) {
+                throw new Error('Copy command was unsuccessful');
+            }
+        };
+
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(videoUrl);
+            } else {
+                fallbackCopy();
+            }
             setIsLinkCopied(true);
-            setTimeout(() => setIsLinkCopied(false), 2000);
-        });
+            if (copyTimeoutRef.current) {
+                clearTimeout(copyTimeoutRef.current);
+            }
+            copyTimeoutRef.current = setTimeout(() => setIsLinkCopied(false), 2000);
+        } catch (error) {
+            console.error('Failed to copy link to clipboard:', error);
+            setIsLinkCopied(false);
+        }
     };
     
     const VideoInfo: React.FC = () => (

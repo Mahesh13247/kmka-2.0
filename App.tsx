@@ -29,6 +29,7 @@ const VideoContent: React.FC = () => {
   const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   const observer = useRef<IntersectionObserver | null>(null);
+  const activeRequestIdRef = useRef(0);
   const lastVideoElementRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (isLoading) return;
@@ -45,6 +46,7 @@ const VideoContent: React.FC = () => {
 
   const fetchVideos = useCallback(
     async (query: string, currentPage: number) => {
+      const requestId = ++activeRequestIdRef.current;
       setIsLoading(true);
       setError(null);
       try {
@@ -56,8 +58,14 @@ const VideoContent: React.FC = () => {
           per_page: RESULTS_PER_PAGE,
         };
         const newVideos = await getVideos(params);
+        if (requestId !== activeRequestIdRef.current) {
+          return;
+        }
         if (newVideos.length === 0) {
           setHasMore(false);
+          if (currentPage === 1) {
+            setVideos([]);
+          }
         } else {
           setVideos((prev) => {
             const result =
@@ -67,11 +75,15 @@ const VideoContent: React.FC = () => {
           setHasMore(newVideos.length >= RESULTS_PER_PAGE);
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
-        );
+        if (requestId === activeRequestIdRef.current) {
+          setError(
+            err instanceof Error ? err.message : "An unknown error occurred"
+          );
+        }
       } finally {
-        setIsLoading(false);
+        if (requestId === activeRequestIdRef.current) {
+          setIsLoading(false);
+        }
       }
     },
     []
