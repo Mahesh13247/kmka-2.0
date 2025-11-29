@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       port: 4173,
       allowedHosts: [
-        'kmka.onrender.com',
+        'kmka-2-0-1.onrender.com',
         '.onrender.com'
       ]
     },
