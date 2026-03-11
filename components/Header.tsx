@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
         <header className="fixed top-0 left-0 right-0 bg-black bg-opacity-70 backdrop-blur-lg z-30 p-3 md:p-4 border-b border-gray-800">
             <div className="container mx-auto flex items-center justify-between gap-4">
                 {/* Mobile Search View */}
-                <div className={`absolute inset-0 bg-black p-3 flex items-center gap-2 transition-transform duration-300 md:hidden ${isSearchOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                <div className={`absolute inset-0 bg-black p-3 flex items-center gap-2 transition-transform duration-300 z-50 md:hidden ${isSearchOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                     <button onClick={() => setIsSearchOpen(false)} className="p-2 text-white">
                         <ArrowLeftIcon />
                     </button>
