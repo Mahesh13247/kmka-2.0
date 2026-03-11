@@ -62,10 +62,11 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                 </div>
                 
                 {/* Default View */}
-                <h1 className="text-xl md:text-2xl font-bold text-white whitespace-nowrap ">
+                <h1 className="text-base md:text-2xl font-bold text-white whitespace-nowrap z-10">
                     <a href="/">
-                    <span className="text-white flex ">
-                        18+ studymaterial <p className="text-[10px] text-[#FFFF00] pl-1">(Made By <span className="text-[#ADFF2F]">Mahesh</span> ⭐)</p>
+                    <span className="text-white flex flex-col sm:flex-row sm:items-baseline leading-tight">
+                        <span>18+ studymaterial</span>
+                        <span className="text-[9px] md:text-[10px] text-[#FFFF00] sm:pl-1">(Made By <span className="text-[#ADFF2F]">Mahesh</span> ⭐)</span>
                     </span></a>
                 </h1>
                 
@@ -88,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                     )}
                 </form>
 
-                <div className="hidden lg:flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-full px-3 py-1">
+                <div className="hidden md:flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-full px-3 py-1">
                     <span className="text-xs text-gray-400 font-medium whitespace-nowrap">Sort by</span>
                     <select 
                         value={currentSort}
@@ -104,7 +105,22 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                     </select>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
+                    {/* Mobile Sort Dropdown */}
+                    <div className="md:hidden flex items-center bg-gray-900 border border-gray-700 rounded-full px-2 py-1">
+                        <select 
+                            value={currentSort}
+                            onChange={(e) => onSelectSort(e.target.value)}
+                            className="bg-transparent text-[11px] text-white focus:outline-none cursor-pointer appearance-none text-center"
+                            aria-label="Sort videos"
+                        >
+                            <option value="latest" className="bg-gray-900">Latest</option>
+                            <option value="top-rated" className="bg-gray-900">Top Rated</option>
+                            <option value="most-viewed" className="bg-gray-900">Most Viewed</option>
+                            <option value="longest" className="bg-gray-900">Longest</option>
+                            <option value="shortest" className="bg-gray-900">Shortest</option>
+                        </select>
+                    </div>
                     {onInstallApp && (
                         <button 
                             onClick={onInstallApp}
