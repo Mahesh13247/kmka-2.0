@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { SearchIcon, StarIcon, ArrowLeftIcon, CloseIcon } from './IconComponents';
+import { SearchIcon, StarIcon, ArrowLeftIcon, CloseIcon, DownloadIcon } from './IconComponents';
 
 interface HeaderProps {
     onSearch: (query: string) => void;
     onToggleFavoritesView: () => void;
     isFavoritesView: boolean;
+    onInstallApp?: () => void;
+    onSelectSort: (sort: string) => void;
+    currentSort: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView, isFavoritesView }) => {
+export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView, isFavoritesView, onInstallApp, onSelectSort, currentSort }) => {
     const [query, setQuery] = useState('');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -60,9 +63,9 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                 
                 {/* Default View */}
                 <h1 className="text-xl md:text-2xl font-bold text-white whitespace-nowrap ">
-                    <a href="https://kmka-2-0-1.onrender.com">
+                    <a href="/">
                     <span className="text-white flex ">
-                        Study Matrial <p className="text-[10px] text-[#FFFF00] pl-1">(Made By <span className="text-[#ADFF2F]">Mahesh</span> ⭐)</p>
+                        18+ studymaterial <p className="text-[10px] text-[#FFFF00] pl-1">(Made By <span className="text-[#ADFF2F]">Mahesh</span> ⭐)</p>
                     </span></a>
                 </h1>
                 
@@ -78,14 +81,40 @@ export const Header: React.FC<HeaderProps> = ({ onSearch, onToggleFavoritesView,
                     <div className="absolute left-3 top-1/2 -translate-y-1/2">
                         <SearchIcon />
                     </div>
-                     {query && (
+                    {query && (
                         <button type="button" onClick={handleClearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 p-1">
                             <CloseIcon className="h-5 w-5 text-gray-400" />
                         </button>
                     )}
                 </form>
 
+                <div className="hidden lg:flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-full px-3 py-1">
+                    <span className="text-xs text-gray-400 font-medium whitespace-nowrap">Sort by</span>
+                    <select 
+                        value={currentSort}
+                        onChange={(e) => onSelectSort(e.target.value)}
+                        className="bg-transparent text-sm text-white focus:outline-none cursor-pointer pr-4"
+                        aria-label="Sort videos"
+                    >
+                        <option value="latest" className="bg-gray-900">Latest</option>
+                        <option value="top-rated" className="bg-gray-900">Top Rated</option>
+                        <option value="most-viewed" className="bg-gray-900">Most Viewed</option>
+                        <option value="longest" className="bg-gray-900">Longest</option>
+                        <option value="shortest" className="bg-gray-900">Shortest</option>
+                    </select>
+                </div>
+
                 <div className="flex items-center gap-2">
+                    {onInstallApp && (
+                        <button 
+                            onClick={onInstallApp}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-white text-black hover:bg-gray-200 rounded-full transition-all font-medium text-sm md:text-base animate-pulse-subtle"
+                            aria-label="Install App"
+                        >
+                            <DownloadIcon className="h-4 w-4 md:h-5 md:w-5" />
+                            <span className="hidden sm:inline">Install App</span>
+                        </button>
+                    )}
                     <button 
                         onClick={() => setIsSearchOpen(true)}
                         className="p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white md:hidden"

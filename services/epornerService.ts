@@ -29,11 +29,20 @@ export const getVideos = async (params: EpornerApiParams): Promise<Video[]> => {
   const searchParams = new URLSearchParams({
     page: page.toString(),
     per_page: per_page.toString(),
-    order,
+    order: order || 'latest',
   });
-  if (query) searchParams.set("query", query);
+
+  // Most Eporner API instances work better if the category is part of the query
+  // or if we use the specific category parameter in lowercase
+  let finalQuery = query || "";
+  if (!finalQuery && category) {
+    finalQuery = category;
+  }
+  
+  if (finalQuery) searchParams.set("query", finalQuery.trim());
+  
   if (category && category.trim().length > 0) {
-    searchParams.set("category", category.trim());
+    searchParams.set("category", category.trim().toLowerCase());
   }
   if (duration_min !== undefined && duration_min > 0)
     searchParams.set("duration_min", duration_min.toString());

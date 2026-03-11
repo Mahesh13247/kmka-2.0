@@ -1,30 +1,34 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { registerSW } from 'virtual:pwa-register';
 import App from "./App";
 import "./styles.css";
+
+// Register the PWA service worker
+registerSW({ immediate: true });
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
   throw new Error("Could not find root element to mount to");
 }
-document.addEventListener("contextmenu", (event) => event.preventDefault());
+// document.addEventListener("contextmenu", (event) => event.preventDefault());
 
-const isCtrlShiftKey = (event: KeyboardEvent, key: string) =>
-  event.ctrlKey && event.shiftKey && event.key.toUpperCase() === key.toUpperCase();
+// const isCtrlShiftKey = (event: KeyboardEvent, key: string) =>
+//   event.ctrlKey && event.shiftKey && event.key.toUpperCase() === key.toUpperCase();
 
-document.addEventListener("keydown", (event) => {
-  // Disable F12, Ctrl + Shift + I/J/C, Ctrl + U
-  const isDisallowed =
-    event.key === "F12" ||
-    isCtrlShiftKey(event, "I") ||
-    isCtrlShiftKey(event, "J") ||
-    isCtrlShiftKey(event, "C") ||
-    (event.ctrlKey && event.key.toUpperCase() === "U");
+// document.addEventListener("keydown", (event) => {
+//   // Disable F12, Ctrl + Shift + I/J/C, Ctrl + U
+//   const isDisallowed =
+//     event.key === "F12" ||
+//     isCtrlShiftKey(event, "I") ||
+//     isCtrlShiftKey(event, "J") ||
+//     isCtrlShiftKey(event, "C") ||
+//     (event.ctrlKey && event.key.toUpperCase() === "U");
 
-  if (isDisallowed) {
-    event.preventDefault();
-  }
-});
+//   if (isDisallowed) {
+//     event.preventDefault();
+//   }
+// });
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>

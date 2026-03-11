@@ -23,8 +23,8 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, onSelectVideo, togg
 
     return (
         <div 
-            className="group bg-gray-900 rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 md:hover:scale-105 md:hover:shadow-2xl md:hover:shadow-gray-800/50"
-            onClick={handleCardClick}
+      className="group relative bg-gray-900 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-white/5 hover-lift cursor-pointer flex flex-col h-full"
+      onClick={() => onSelectVideo(video)}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && onSelectVideo(video)}

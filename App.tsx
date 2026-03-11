@@ -2,10 +2,13 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Header } from "./components/Header";
 import { VideoGrid } from "./components/VideoGrid";
 import { VideoPlayerModal } from "./components/VideoPlayerModal";
+import { CategoryBar } from "./components/CategoryBar";
 import { getVideos } from "./services/epornerService";
 import type { Video, EpornerApiParams } from "./types";
 import { useFavorites } from "./hooks/useFavorites";
+import { usePWA } from "./hooks/usePWA";
 import { Toast } from "./components/Toast";
+import { InstallAppPrompt } from "./components/InstallAppPrompt";
 
 const DEFAULT_ORDER = "latest";
 const DEFAULT_CATEGORY = "";
@@ -20,6 +23,8 @@ const VideoContent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>(DEFAULT_CATEGORY);
+  const [sortBy, setSortBy] = useState<string>(DEFAULT_ORDER);
   const [viewMode, setViewMode] = useState<"search" | "favorites">("search");
   const [toast, setToast] = useState<{
     message: string;
@@ -27,6 +32,13 @@ const VideoContent: React.FC = () => {
   } | null>(null);
 
   const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { 
+    showInstallPrompt, 
+    isStandalone, 
+    deferredPrompt, 
+    handleInstallApp, 
+    closeInstallPrompt 
+  } = usePWA();
 
   const observer = useRef<IntersectionObserver | null>(null);
   const activeRequestIdRef = useRef(0);
@@ -51,8 +63,8 @@ const VideoContent: React.FC = () => {
       setError(null);
       try {
         const params: EpornerApiParams = {
-          order: DEFAULT_ORDER,
-          category: DEFAULT_CATEGORY,
+          order: sortBy,
+          category: selectedCategory,
           query,
           page: currentPage,
           per_page: RESULTS_PER_PAGE,
@@ -86,7 +98,7 @@ const VideoContent: React.FC = () => {
         }
       }
     },
-    []
+    [selectedCategory, sortBy]
   );
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -114,17 +126,39 @@ const VideoContent: React.FC = () => {
       }, 300); // Debounce search/filter changes
       return () => clearTimeout(handler);
     }
-  }, [fetchVideos, searchQuery, viewMode, isInitialLoad]);
+  }, [fetchVideos, searchQuery, viewMode, isInitialLoad, selectedCategory, sortBy]);
 
   useEffect(() => {
     if (viewMode === "search" && page > 1) {
       fetchVideos(searchQuery || "", page);
     }
-  }, [page, viewMode, searchQuery, fetchVideos]);
+  }, [page, viewMode, searchQuery, fetchVideos, selectedCategory, sortBy]);
 
   const handleSearch = useCallback((query: string) => {
+    setSelectedCategory(""); // Reset category on manual search
     setViewMode("search");
     setSearchQuery(query);
+  }, []);
+
+  const handleSelectFromBar = useCallback((value: string, type: 'category' | 'order') => {
+    if (type === 'category') {
+      setSelectedCategory(value);
+      setSortBy(DEFAULT_ORDER); // Reset sort when picking a specific category
+    } else {
+      setSortBy(value);
+      setSelectedCategory(""); // Reset category when picking a global sort
+    }
+    setSearchQuery(""); // Reset search on any bar select
+    setPage(1);
+    setVideos([]);
+    setHasMore(true);
+  }, []);
+
+  const handleSelectSort = useCallback((sort: string) => {
+    setSortBy(sort);
+    setPage(1);
+    setVideos([]);
+    setHasMore(true);
   }, []);
 
   const handleToggleFavoritesView = () => {
@@ -178,10 +212,20 @@ const VideoContent: React.FC = () => {
         onSearch={handleSearch}
         onToggleFavoritesView={handleToggleFavoritesView}
         isFavoritesView={isFavoritesView}
+        onInstallApp={deferredPrompt ? handleInstallApp : undefined}
+        onSelectSort={handleSelectSort}
+        currentSort={sortBy}
       />
       <main className="container mx-auto px-4 py-8 pt-20 md:pt-24">
+        {viewMode === "search" && (
+          <CategoryBar 
+            selectedCategory={selectedCategory}
+            selectedSort={sortBy}
+            onSelect={handleSelectFromBar}
+          />
+        )}
         <div
-          key={`${viewMode}-${videos.length}-${searchQuery}`}
+          key={`${viewMode}-${searchQuery}`}
           className="animate-fade-in"
         >
           <VideoGrid
@@ -212,6 +256,13 @@ const VideoContent: React.FC = () => {
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
+        />
+      )}
+      {!isStandalone && (
+        <InstallAppPrompt 
+          isVisible={showInstallPrompt}
+          onInstall={handleInstallApp}
+          onClose={closeInstallPrompt}
         />
       )}
     </div>
